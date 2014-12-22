@@ -172,41 +172,7 @@
 		<artifactId>jackson-annotations</artifactId>
 		<version>2.2.0</version>
 	</dependency>
-	<dependency>
-		<groupId>org.hibernate</groupId>
-		<artifactId>hibernate-validator</artifactId>
-		<version>4.1.0.Final</version>
-	</dependency>
-	<dependency>
-		<groupId>org.hibernate.javax.persistence</groupId>
-		<artifactId>hibernate-jpa-2.0-api</artifactId>
-		<version>1.0.1.Final</version>
-	</dependency>
-	<dependency>
-		<groupId>org.hibernate</groupId>
-		<artifactId>hibernate-envers</artifactId>
-		<version>4.1.9.Final</version>
-	</dependency>
-	<dependency>
-		<groupId>org.hibernate</groupId>
-		<artifactId>hibernate-entitymanager</artifactId>
-		<version>3.6.8.Final</version>
-	</dependency>
-	<dependency>
-		<groupId>org.hibernate</groupId>
-		<artifactId>hibernate-core</artifactId>
-		<version>3.6.8.Final</version>
-	</dependency>
-	<dependency>
-		<groupId>org.hibernate</groupId>
-		<artifactId>hibernate-commons-annotations</artifactId>
-		<version>3.2.0.Final</version>
-	</dependency>
-	<dependency>
-		<groupId>com.google.guava</groupId>
-		<artifactId>guava</artifactId>
-		<version>14.0</version>
-	</dependency>
+
 	<dependency>
 		<groupId>commons-pool</groupId>
 		<artifactId>commons-pool</artifactId>
@@ -390,6 +356,28 @@
 				</configuration>
 			</plugin>
         	 
+        <plugin>
+          <groupId>org.liquibase</groupId>
+          <artifactId>liquibase-maven-plugin</artifactId>
+          <version>3.0.2</version>
+          <configuration>
+          	<propertyFile>src/main/resources/liquibase.properties</propertyFile> 
+            <clearCheckSums>true</clearCheckSums>
+            <driver>com.mysql.jdbc.Driver</driver>
+			<verbose>true</verbose>
+            <changeLogFile>src/main/resources/changelog.sql</changeLogFile>
+            <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
+            <skip>${liquibase.skip}</skip> <!--  option to skip liquibase when running tests, mvn test -Dliquibase.skip=true -->
+          </configuration>
+          <executions>
+            <execution>
+              <phase>install</phase>
+              <goals>
+                <goal>update</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
 
 		</plugins>
 	</build>
