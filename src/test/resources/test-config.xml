@@ -55,4 +55,11 @@
 
     <context:component-scan base-package="com.rdkc.linked.hint"/>
 
+    <context:property-placeholder location="classpath:linkedIn.properties" system-properties-mode="OVERRIDE" />
+    <bean id="profileService" class="com.rdkc.linked.hint.service.ProfileService"> 
+   		<property name="accountApiKey" value="${linkedIn.accountApiKey}" />
+   		<property name="accountSecretKey" value="${linkedIn.accountSecretKey}" />
+   		<property name="token" value="${linkedIn.token}" />
+   		<property name="tokenSecret" value="${linkedIn.tokenSecret}" />
+   </bean>
   </beans>
