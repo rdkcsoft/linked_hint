@@ -12,7 +12,7 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:test-config.xml"})
+@ContextConfiguration(locations = {"classpath:applicationTestContext.xml"})
 @Transactional
 @TransactionConfiguration(defaultRollback=true)
 public class TestApiSpringTest extends AbstractTransactionalJUnit4SpringContextTests {

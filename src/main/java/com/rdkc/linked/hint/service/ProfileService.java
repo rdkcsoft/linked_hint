@@ -1,11 +1,18 @@
 package com.rdkc.linked.hint.service;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Scanner;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.util.EntityUtils;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.LinkedInApi;
 import org.scribe.model.OAuthRequest;
@@ -22,24 +29,15 @@ import org.springframework.stereotype.Service;
 @Repository
 public class ProfileService {
 
+	private static Log log = LogFactory.getLog(ProfileService.class);
+	
+	private static final String PROFILE_URL = "https://api.linkedin.com/v1/people/url={url}:(id,educations,positions:(title,company:(name)))";
 	
 	private String accountApiKey;
-	
-	
 	private String accountSecretKey;
 	
-	
-	private String token;
-	
-	
-	private String tokenSecret;
-	
-	
-	//@Autowired
-	//HttpClient httpClient; // TODO use
-	
-	// TODO from DB
-	private static final String PROTECTED_RESOURCE_URL = "http://api.linkedin.com/v1/people/~";
+	@Autowired
+	HttpClient httpClient;
 	  
 
 	public void setAccountApiKey(String accountApiKey) {
@@ -51,29 +49,17 @@ public class ProfileService {
 	}
 
 
-	public void setToken(String token) {
-		this.token = token;
-	}
-
-	public void setTokenSecret(String tokenSecret) {
-		this.tokenSecret = tokenSecret;
-	}
-
-	public void getPublicProfile(String publicUrl) {
+	public void getProfile(String profileUrl, String token) throws ClientProtocolException, IOException {
+		String url = PROFILE_URL.replace("{url}", URLEncoder.encode(profileUrl,"UTF-8"));
 		
-		/*HttpClientContext context = HttpClientContext.create();
-		
-		HttpGet httpget = new HttpGet(uriString);
-		HttpResponse response = httpClient.execute(httpget, context);*/
-		
-		OAuthService service = new ServiceBuilder()
+		/*OAuthService service = new ServiceBuilder()
 	        .provider(LinkedInApi.class)
 	        .apiKey(accountApiKey)
 	        .apiSecret(accountSecretKey)
 	        .build();
 		
 		// if token expires, uncomment and run with the user logged out from linkedin
-		/*Scanner in = new Scanner(System.in);
+		Scanner in = new Scanner(System.in);
 	    
 	    System.out.println("=== LinkedIn's OAuth Workflow ===");
 	    System.out.println();
@@ -91,7 +77,7 @@ public class ProfileService {
 	    Verifier verifier = new Verifier(in.nextLine());
 	    System.out.println();
 
-	    // Trade the Request Token and Verfier for the Access Token
+	    // Trade the Request Token and Verifier for the Access Token
 	    System.out.println("Trading the Request Token for an Access Token...");
 	    Token accessToken = service.getAccessToken(requestToken, verifier);
 	    System.out.println("Got the Access Token!");
@@ -99,16 +85,23 @@ public class ProfileService {
 	    System.out.println(); */
 	    
 		// token, tokenSecret expire in 60 days
-		Token accessToken = new Token(token, tokenSecret);
+		/*Token accessToken = new Token(token, tokenSecret);
 
-	    // Now let's go and ask for a protected resource!
-	    System.out.println("Now we're going to access a protected resource...");
-	    OAuthRequest request = new OAuthRequest(Verb.GET, PROTECTED_RESOURCE_URL);
+	    OAuthRequest request = new OAuthRequest(Verb.GET, url);
 	    service.signRequest(accessToken, request);
+	    System.out.println(request.getCompleteUrl());
+	    System.out.println(request.getHeaders());
 	    Response response = request.send();
-	    System.out.println("Got it! Lets see what we found...");
-	    System.out.println();
-	    System.out.println(response.getBody());
+	    System.out.println(response.getBody());*/
 		
+		HttpClientContext context = HttpClientContext.create();
+	
+	    url += "?oauth2_access_token=" +  token;
+	    log.debug(url);
+	    
+		HttpGet httpGet = new HttpGet(url);
+		HttpResponse response = httpClient.execute(httpGet, context);
+		
+	    log.debug(EntityUtils.toString(response.getEntity(), "UTF-8"));
 	}
 }

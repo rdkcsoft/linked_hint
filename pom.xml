@@ -368,7 +368,7 @@
             <clearCheckSums>true</clearCheckSums>
             <driver>com.mysql.jdbc.Driver</driver>
 			<verbose>true</verbose>
-            <changeLogFile>src/main/resources/changelog.sql</changeLogFile>
+            <changeLogFile>src/main/resources/changeLog.sql</changeLogFile>
             <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
             <skip>${liquibase.skip}</skip> <!--  option to skip liquibase when running tests, mvn test -Dliquibase.skip=true -->
           </configuration>

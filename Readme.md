@@ -8,6 +8,5 @@ design
 
 API security
 aspects
-logging
 
 
